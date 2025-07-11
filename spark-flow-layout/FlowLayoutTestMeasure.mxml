@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application  xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                xmlns:mx="library://ns.adobe.com/flex/halo"
+                xmlns:my="*">
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+        ]]>
+    </fx:Script>
+    
+    <!-- The Application layout -->
+    <s:layout>
+        <s:VerticalLayout horizontalAlign="center"
+                          paddingTop="40" gap="20"/>
+    </s:layout>
+    
+    <!-- The slider to control the horizontal gap -->
+    <s:HSlider id="hGapSlider" minimum="0" maximum="50"
+               value="10" liveDragging="true"/>               
+    
+    <s:Group>
+        <s:Scroller>
+            <s:Group id="g">
+                <!-- Configure the layout to be the FlowLayout -->    
+                <s:layout>
+                    <my:FlowLayout4 horizontalGap="{hGapSlider.value}"/>
+                </s:layout>
+                
+                <s:Label text="The"/>
+                <s:Label text="quick"/>
+                <s:Label text="fox"/>
+                <s:Label text="jumped"/>
+                <s:Label text="over"/>
+                <s:Label text="the"/>
+                <s:Label text="lazy"/>
+                <s:Label text="dog"/>
+            </s:Group>
+        </s:Scroller>
+
+        <!-- A Rect for border outline -->
+        <s:Rect left="-1" right="-1" top="-1" bottom="-1">
+            <s:stroke>
+                <s:SolidColorStroke color="0xFF0000"/>
+            </s:stroke>
+        </s:Rect> 
+    </s:Group>
+            
+</s:Application>

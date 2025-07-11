@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    width="322" height="346">
+    
+    <fx:Script>
+        import mx.events.EffectEvent;
+        import mx.effects.Effect;
+        import spark.effects.animation.RepeatBehavior;
+        
+        private var animatingTargets:Object = new Object();
+        
+        private function animateHover(target:Object):void
+        {
+            if (animatingTargets[target.id] === undefined)
+            {
+                var effect:Effect;                
+                if (rotationButton.selected)
+                    effect = rotator;
+                else
+                    effect = mover;
+                effect.target = target;
+                animatingTargets[target.id] = effect;
+                effect.play();
+            }
+        }
+        private function effectEndHandler(event:EffectEvent):void
+        {
+            delete animatingTargets[event.effectInstance.target.id];
+        }
+    </fx:Script>
+    <fx:Declarations> 
+        <s:Rotate3D id="rotator" angleYFrom="0" angleYTo="360"
+            autoCenterTransform="true"
+            effectEnd="effectEndHandler(event)"/>
+        <s:Move3D id="mover" duration="200"
+            zBy="-30" repeatCount="2"
+            repeatBehavior="{RepeatBehavior.REVERSE}"
+            autoCenterTransform="true"
+            effectEnd="effectEndHandler(event)"/>
+    </fx:Declarations>
+    <s:VGroup x="5" y="5">
+        <s:HGroup>
+            <s:RadioButton groupName="effectType" label="Rotation"
+                id="rotationButton" selected="true"/>
+            <s:RadioButton groupName="effectType" label="Movement"
+                id="movementButton" selected="false"/>
+        </s:HGroup>
+        <s:Group>
+            <s:layout>
+                <s:TileLayout requestedColumnCount="3"/>
+            </s:layout>
+            <s:Button id="button0" width="100" height="100" mouseOver="animateHover(button0)"/> 
+            <s:Button id="button1" width="100" height="100" mouseOver="animateHover(button1)"/> 
+            <s:Button id="button2" width="100" height="100" mouseOver="animateHover(button2)"/> 
+            <s:Button id="button3" width="100" height="100" mouseOver="animateHover(button3)"/> 
+            <s:Button id="button4" width="100" height="100" mouseOver="animateHover(button4)"/> 
+            <s:Button id="button5" width="100" height="100" mouseOver="animateHover(button5)"/> 
+            <s:Button id="button6" width="100" height="100" mouseOver="animateHover(button6)"/> 
+            <s:Button id="button7" width="100" height="100" mouseOver="animateHover(button7)"/> 
+            <s:Button id="button8" width="100" height="100" mouseOver="animateHover(button8)"/> 
+        </s:Group>
+    </s:VGroup>
+</s:Application>

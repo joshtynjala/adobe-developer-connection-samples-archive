@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:mx="library://ns.adobe.com/flex/mx"
+    width="500" height="322">
+    
+    <fx:Script>
+        import spark.effects.WipeDirection;
+        
+        [Embed(source="images/GoldenGate.jpg")]
+        [Bindable]
+        private var GoldenGate:Class;
+        
+        [Embed(source="images/Harbor.jpg")]
+        [Bindable]
+        private var Harbor:Class;
+        
+        private function changeHandler(event:Event):void
+        {
+            switch (event.target)
+            {
+                case crossBtn:
+                    transition.effect = crossfader;
+                    break;
+                case wipeLBtn:
+                    transition.effect = wiper;
+                    wiper.direction = WipeDirection.LEFT;
+                    break;
+                case wipeRBtn:
+                    transition.effect = wiper;
+                    wiper.direction = WipeDirection.RIGHT;
+                    break;
+                case wipeDBtn:
+                    transition.effect = wiper;
+                    wiper.direction = WipeDirection.DOWN;
+                    break;
+                case wipeUBtn:
+                    transition.effect = wiper;
+                    wiper.direction = WipeDirection.UP;
+                    break;
+            }
+        }
+    </fx:Script>
+    <s:states>
+        <s:State name="state1"/>
+        <s:State name="state2"/>
+    </s:states>
+    <fx:Declarations>
+        <s:CrossFade id="crossfader" target="{img}"/>
+        <s:Wipe id="wiper" target="{img}"/>
+    </fx:Declarations>
+    <s:transitions>
+        <s:Transition id="transition" effect="{crossfader}"/>
+    </s:transitions>
+    <s:VGroup>        
+        <s:HGroup>
+            <s:RadioButton id="crossBtn" label="Crossfade" selected="true"
+                groupName="EffectType" change="changeHandler(event)"/>
+            <s:RadioButton id="wipeLBtn" label="Wipe Left"
+                groupName="EffectType" change="changeHandler(event)"/>
+            <s:RadioButton id="wipeRBtn" label="Wipe Right"
+                groupName="EffectType" change="changeHandler(event)"/>
+            <s:RadioButton id="wipeDBtn" label="Wipe Down"
+                groupName="EffectType" change="changeHandler(event)"/>
+            <s:RadioButton id="wipeUBtn" label="Wipe UP"
+                groupName="EffectType" change="changeHandler(event)"/>
+        </s:HGroup>
+        <mx:Image id="img" source="{GoldenGate}" source.state2="{Harbor}"
+            click="currentState = (currentState == 'state1') ? 'state2':'state1'"/>
+    </s:VGroup>
+</s:Application>

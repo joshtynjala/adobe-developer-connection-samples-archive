@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graphic version="2.0" xmlns="http://ns.adobe.com/fxg/2008" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:fc="http://ns.adobe.com/flashcatalyst/2009">
+	<Rect x="0" y="0" width="10" height="10">
+		<fill>
+			<SolidColor color="#CCCCCC"/>
+		</fill>
+	</Rect>
+</Graphic>

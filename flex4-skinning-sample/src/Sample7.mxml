@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" click="clickHandler(event)">
+	<fx:Style>
+	    @namespace local "*";
+    	
+    	local|NoteCard
+    	{
+    	    skinClass: ClassReference("NoteCardSkin");
+    	}
+	</fx:Style>
+	<fx:Script>
+	    <![CDATA[
+	        private var quotations:Array = ["One ought, every day at least, to hear a little song, read a good poem, see a fine picture, and, if it were possible, to speak a few reasonable words.\n\n—Johann Wolfgang von Goethe", 
+	           "Religion is the human response to being alive and having to die.\n\n-F. Forrester Church", 
+	           "Love doesn't make the world go 'round; love is what makes the ride worthwhile.\n\n--Franklin P. Jones", 
+	           "Creative thought must always contain a random component. \n\n--Gregory Bateson",
+	           "Life is a succession of lessons, which must be lived to be understood.\n\n-Ralph Waldo Emerson"];
+	        
+	        private function clickHandler(event:MouseEvent):void
+	        {
+	            var noteCard:NoteCard = new NoteCard();
+	            var quotationsIndex:int = Math.floor(Math.random()*quotations.length);
+	            noteCard.text = quotations[quotationsIndex];
+	            noteCard.rotation = Math.floor(Math.random()*90)-45;
+	            noteCard.x = event.stageX;
+	            noteCard.y = event.stageY;
+	            addElement(noteCard);
+	        }
+	    ]]>
+	</fx:Script>
+</s:Application>

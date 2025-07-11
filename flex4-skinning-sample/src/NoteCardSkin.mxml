@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+      alpha.disabled="0.5">
+
+    <fx:Metadata>
+        [HostComponent("NoteCard")]
+    </fx:Metadata> 
+    <s:states>
+        <s:State name="normal" />
+        <s:State name="disabled" />
+    </s:states>
+    
+    <s:Rect width="300" height="200">
+        <s:stroke>
+            <s:SolidColorStroke color="0xAA8E5E" weight="4" />
+        </s:stroke>
+        <s:fill>
+            <s:LinearGradient>
+                <s:GradientEntry color="0x316541" />
+                <s:GradientEntry color="0x204325" />
+            </s:LinearGradient>
+        </s:fill>
+    </s:Rect>
+    
+    <s:Label id="labelDisplay" left="10" top="10" width="280" height="180" color="0xFFF3E9" lineBreak="toFit" fontSize="18" fontFamily="Chalkboard" />
+    
+    <s:Button id="closeButton" skinClass="NoteCardCloseButtonSkin" bottom="5" right="5" /> 
+
+</s:Skin>

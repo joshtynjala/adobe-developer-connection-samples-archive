@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+This is a somewhat more complicated version of the example from the text.  It displays
+the IViewport actual and content sizes, as well as the current scroll positions.   Hopefully
+seeing all of this makes it a little easier to understand how the various parts fit together.
+-->
+
+<s:Application 
+    xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:mx="library://ns.adobe.com/flex/mx">
+    
+    <s:Group>
+        <s:Group left="20" top="1" width="110" height="160">
+            <s:Scroller left="2" right="2" top="2" bottom="2">
+                <s:Group id="vp" horizontalScrollPosition="57" verticalScrollPosition="198">
+                    <mx:Image source="http://sites.google.com/site/hansmuller/Home/archive/gyro-original.jpg"/>
+                </s:Group>
+            </s:Scroller>
+            
+            <s:Rect left="0" right="0" top="0" bottom="0">
+                <s:stroke>
+                    <s:SolidColorStroke weight="1" color="0xD8D8D8"/>
+                </s:stroke>
+            </s:Rect>
+        </s:Group>
+        <s:Label horizontalCenter="10" top="175" text="viewport.width = {vp.width}"/>
+        <s:Label verticalCenter="-10" rotation="-90" text="viewport.height = {vp.height}"/>                
+    </s:Group>
+
+    <s:VGroup left="140" top="10" gap="15">
+        <s:Label text="viewport.contentWidth = {vp.contentWidth}"/>
+        <s:Label text="viewport.contentHeight = {vp.contentHeight}"/>
+        <s:Label text="viewport.horizontalScrollPosition = {vp.horizontalScrollPosition}"/>
+        <s:Label text="viewport.verticalScrollPosition = {vp.verticalScrollPosition}"/>
+    </s:VGroup>
+
+</s:Application>

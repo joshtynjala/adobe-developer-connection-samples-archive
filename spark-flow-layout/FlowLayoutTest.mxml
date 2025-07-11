@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application  xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                xmlns:mx="library://ns.adobe.com/flex/halo"
+                xmlns:my="*">
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+        ]]>
+    </fx:Script>
+    
+    <!-- The Application layout -->
+    <s:layout>
+        <s:VerticalLayout horizontalAlign="center"
+                          paddingTop="40" gap="20"/>
+    </s:layout>
+    
+    <!-- The slider to control the list width -->
+    <s:HSlider id="widthSlider" minimum="10" maximum="400"
+               value="200" liveDragging="true"/>
+    
+    <!-- A Spark List -->
+    <s:List id="list1" width="{widthSlider.value}" height="112"
+            dataProvider="{new ArrayCollection(
+        'The quick fox jumped over the lazy dog'.split(' '))}">
+        
+        <!-- Configure the layout to be the FlowLayout -->    
+        <s:layout>
+            <!-- Very minimal layout -->
+            <my:FlowLayout1/>
+
+            <!-- Adding Scrolling support -->
+            <!--<my:FlowLayout2/>-->
+
+            <!-- Adding horizontalGap property -->    
+            <!--<my:FlowLayout3 horizontalGap="4"/>-->
+        </s:layout>
+    </s:List>
+
+</s:Application>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark">
+
+    <fx:Script>
+        import spark.effects.animation.RepeatBehavior;
+        private var animating:Boolean = false;
+    </fx:Script>
+    <fx:Declarations>
+        <s:GlowFilter id="glow" blurX="20" blurY="20" />
+        <s:AnimateFilter id="glower" target="{button}" 
+        	bitmapFilter="{glow}" duration="600"
+            repeatCount="0" repeatBehavior="{RepeatBehavior.REVERSE}">
+            <s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1"/>
+        </s:AnimateFilter>
+    </fx:Declarations>
+    <s:Button id="button" x="100" y="100" 
+        mouseOver="if (!animating) { glower.play(); animating = true}" 
+        mouseOut="if (animating) { glower.end(); animating = false}"/>    
+</s:Application>

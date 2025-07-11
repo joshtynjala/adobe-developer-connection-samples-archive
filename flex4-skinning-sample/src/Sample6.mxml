@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark">
+    <s:Group horizontalCenter="0" verticalCenter="0">
+        <s:layout>
+            <s:HorizontalLayout gap="20" />
+        </s:layout>
+        <s:Group>
+            <s:layout>
+                <s:VerticalLayout horizontalAlign="center" />
+            </s:layout>
+            <s:VSlider skinClass="MySliderSkin" height="200"/>
+            <s:Label text="MySliderSkin" />
+        </s:Group>
+        <s:Group>
+            <s:layout>
+                <s:VerticalLayout horizontalAlign="center" />
+            </s:layout>
+            <s:VSlider height="200"/>
+            <s:Label text="Original Spark Slider Skin" />
+        </s:Group>
+    </s:Group>
+</s:Application>

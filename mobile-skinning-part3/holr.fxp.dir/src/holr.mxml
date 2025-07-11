@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							xmlns:s="library://ns.adobe.com/flex/spark"
+							firstView="views.holrHomeView">
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		s|ActionBar
+		{
+			chromeColor: #990000;
+			titleAlign: center;
+		}
+		
+		@media (os-platform: "IOS")
+		{
+			s|ActionBar
+			{
+				defaultButtonAppearance: beveled;
+			}
+		}
+		
+		@media (os-platform: "QNX")
+		{
+			s|ActionBar
+			{
+				defaultButtonAppearance: beveled;
+			}
+			
+			s|ActionBar #titleDisplay
+			{
+				fontSize: 24;
+				fontWeight: normal;
+			}
+			
+			s|ActionBar.beveled s|Group#navigationGroup s|Button
+			{
+				/* use the rounded button instead of the angled back button */
+				skinClass: ClassReference("spark.skins.mobile.BeveledActionButtonSkin");
+			}
+			
+			s|ActionBar.beveled s|Group#actionGroup s|Button,
+				s|ActionBar.beveled s|Group#navigationGroup s|Button
+			{
+				fontSize: 20;
+				fontWeight: normal;
+			}
+			
+			global
+			{
+				fontSize: 20;
+			}
+		}
+	</fx:Style>
+	<s:navigationContent>
+		<s:Button label="Back"/>
+	</s:navigationContent>
+	<s:actionContent>
+		<s:Button label="Save"/>
+	</s:actionContent>
+</s:ViewNavigatorApplication>

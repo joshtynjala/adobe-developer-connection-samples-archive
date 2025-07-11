@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark">
+    
+    <fx:Declarations>
+        <s:Animate id="mover" target="{button}" duration="1000">
+            <s:SimpleMotionPath property="x" valueFrom="0" valueTo="100"/>
+            <s:SimpleMotionPath property="y" valueTo="100"/>
+            <s:SimpleMotionPath property="width" valueBy="20"/>
+        </s:Animate>
+    </fx:Declarations>
+    <s:Button id="button" click="mover.play()"/>
+</s:Application>

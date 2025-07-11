@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark">
+    
+    <s:states>
+        <s:State name="state1"/>
+        <s:State name="state2"/>
+    </s:states>
+    <s:transitions>
+        <s:Transition>
+            <s:AnimateColor target="{center}" duration="150"/>
+        </s:Transition>
+    </s:transitions>
+    <s:Group mouseDown="currentState='state2'" mouseUp="currentState='state1'">
+        <s:Ellipse x="50" y="50" width="100" height="100"> 
+            <s:fill>
+                <s:RadialGradient>
+                    <s:GradientEntry id="center" color="0x80f080" 
+                        color.state2="0x408040" ratio="0"/>
+                    <s:GradientEntry id="edge" color="0x404040"
+                        ratio="1"/>
+                </s:RadialGradient>
+            </s:fill>
+        </s:Ellipse>
+    </s:Group>
+</s:Application>

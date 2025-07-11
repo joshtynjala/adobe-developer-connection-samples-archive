@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:mx="library://ns.adobe.com/flex/mx"
+    width="500" height="298"
+    creationComplete="creationComplete()">
+    
+    <fx:Script>
+        [Embed(source="images/GoldenGate.jpg")]
+        [Bindable]
+        private var GoldenGate:Class;
+        private var goldenGateBD:BitmapData;
+        
+        [Embed(source="images/Harbor.jpg")]
+        [Bindable]
+        private var Harbor:Class;
+        private var harborBD:BitmapData;
+        
+        private function creationComplete():void
+        {
+            goldenGateBD = (new GoldenGate()).bitmapData;
+            harborBD = (new Harbor()).bitmapData;
+        }
+        
+        private var newImageSource:Class;
+        
+        private function clickHandler():void
+        {
+            var bd0:BitmapData;
+            var bd1:BitmapData;
+            
+            if (img.source == GoldenGate)
+            {
+                newImageSource = Harbor;
+                bd0 = goldenGateBD;
+                bd1 = harborBD;
+            }    
+            else
+            {
+                newImageSource = GoldenGate;
+                bd0 = harborBD;
+                bd1 = goldenGateBD;
+            }
+            crossfadeFilter.shader.data.frontImage.input = bd0;
+            crossfadeFilter.shader.data.backImage.input = bd1;
+            crossfader.play();  
+        }
+        
+        private function effectEndHandler():void
+        {
+            img.source = newImageSource;
+        }
+    </fx:Script>
+    <fx:Declarations>
+        <s:ShaderFilter id="crossfadeFilter" shader="@Embed(source='shaders/crossfade.pbj')"/>
+        <s:AnimateFilter id="crossfader" target="{img}" 
+            bitmapFilter="{crossfadeFilter}" effectEnd="effectEndHandler()">
+            <s:SimpleMotionPath property="intensity" valueFrom="0" valueTo="1"/>
+        </s:AnimateFilter>
+    </fx:Declarations>
+    <mx:Image id="img" source="{GoldenGate}" click="clickHandler()"/>
+</s:Application>

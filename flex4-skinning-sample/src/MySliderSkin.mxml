@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+      minWidth="11" minHeight="100"
+      alpha.disabled="0.5">
+
+    <fx:Metadata>
+        [HostComponent("spark.components.VSlider")]
+    </fx:Metadata> 
+    <s:states>
+        <s:State name="normal" />
+        <s:State name="disabled" />
+    </s:states>
+    
+    <fx:Declarations>
+        <fx:Component id="dataTip">
+            <s:DataRenderer minHeight="24" minWidth="40" x="20"> 
+                <s:Rect top="0" left="0" right="0" bottom="0">
+                    <s:fill>
+                        <s:SolidColor color="0xFFF46B" alpha=".9"/>
+                    </s:fill>
+                    <s:filters>
+                        <s:DropShadowFilter angle="90" color="0x999999" distance="3"/>
+                    </s:filters>
+                </s:Rect>
+                        
+                <s:Label id="labelDisplay" text="{data}"
+                         horizontalCenter="0" verticalCenter="1"
+                         left="5" right="5" top="5" bottom="5"
+                         textAlign="center" verticalAlign="middle" color="0x555555" />
+            </s:DataRenderer>
+        </fx:Component>
+    </fx:Declarations>
+    
+    <s:Button id="track" left="5" right="5" top="0" bottom="0" 
+              skinClass="MyTrackSkin" />
+    <s:Button id="thumb" left="0" right="0" width="18" height="8" 
+              skinClass="MyThumbSkin" />
+
+</s:Skin>

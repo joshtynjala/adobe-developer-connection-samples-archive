@@ -1,0 +1,56 @@
+/* CSS file */
+@namespace "library://ns.adobe.com/flex/spark";
+
+@media (os-platform: "QNX") and (application-dpi: 160)
+{
+	ActionBar #titleDisplay
+	{
+		fontSize: 22;
+		fontWeight: normal;
+	}
+	
+	ActionBar Group#navigationGroup Button
+	{
+		fontWeight: normal;
+	}
+	
+	ActionBar Group#actionGroup Button
+	{
+		fontWeight: normal;
+	}
+	
+	ActionBar.beveled Group#navigationGroup Button
+	{
+		fontSize: 18;
+	}
+	
+	ActionBar.beveled Group#actionGroup Button
+	{
+		fontSize: 18;
+	}
+	
+	Button
+	{
+		fontWeight: normal;
+	}
+	
+	ButtonBar
+	{
+		fontWeight: normal;
+	}
+	
+	.iconItemRendererMessageStyle
+	{
+		fontSize: 16;
+	}
+	
+	TabbedViewNavigator #tabBar
+	{
+		fontSize: 18;
+	}
+	
+	global
+	{
+		fontSize: 18;
+	}
+}

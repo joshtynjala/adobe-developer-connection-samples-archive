@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" xmlns="http://ns.adobe.com/fxg/2008" scaleGridLeft="5" scaleGridRight="75" scaleGridTop="5" scaleGridBottom="25">
+  
+        <Rect x="0.5" y="1.5" width="79" height="29" radiusX="4" radiusY="4">
+          <stroke>
+            <SolidColorStroke weight="1" caps="none" joints="miter" miterLimit="10" alpha="0.1" color="#FFFFFF"/>
+          </stroke>
+          <fill>
+			<LinearGradient x = "0" y = "0" scaleX = "29" rotation = "90">
+				<GradientEntry color="#000000" ratio="0" alpha="0.5"/>
+				<GradientEntry color="#000000" ratio="0.5" alpha="0"/>
+			</LinearGradient>
+		</fill>
+        </Rect>
+        <Rect x="0.5" y="0.5" width="79" height="29" radiusX="4" radiusY="4">
+          <stroke>
+            <SolidColorStroke weight="1" caps="none" joints="miter" miterLimit="10" color="#484848"/>
+          </stroke>
+        </Rect>
+        
+        <!-- scale grid fix -->
+        <Rect width="80" height="31">
+          <fill>
+            <SolidColor color="#000000" alpha="0"/>
+          </fill>
+        </Rect>
+        
+</Graphic>

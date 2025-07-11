@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark">
+    
+    <fx:Declarations>
+        <s:Parallel id="transformer" target="{button}">
+            <s:Move xFrom="50" xTo="150" autoCenterTransform="true"/>
+            <s:Rotate angleFrom="0" angleTo="360" autoCenterTransform="true"/>
+            <s:Scale scaleXFrom="1" scaleXTo="2" autoCenterTransform="true"/>
+        </s:Parallel>
+    </fx:Declarations>
+    <s:Button id="button" x="50" y="100" label="Transform Me"
+        click="transformer.play()"/>
+</s:Application>

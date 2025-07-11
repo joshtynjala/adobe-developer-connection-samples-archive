@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:twitterservice="services.twitterservice.*"
+		title="Twitter Trends"
+		viewActivate="refresh()">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.serializers.utility.TypeUtility;
+			
+			import spark.events.IndexChangeEvent;
+			protected function getTrends():void
+			{
+				getTrendsResult.token = twitterService.getTrends();
+			}
+			
+			public function refresh(): void {
+				getTrends();
+			}
+			
+			protected function list_changeHandler(event:IndexChangeEvent):void
+			{
+				navigator.pushView(TweetsView, list.selectedItem.name);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:CallResponder id="getTrendsResult"/>
+		<twitterservice:TwitterService id="twitterService"/>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:List id="list" left="0" right="0" top="0" bottom="0" labelField="name" change="list_changeHandler(event)">
+		<s:AsyncListView list="{TypeUtility.convertToCollection(getTrendsResult.lastResult.trends)}"/>
+	</s:List>
+</s:View>
