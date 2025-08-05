@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="100%" height="100%"
+	creationComplete="init()"
+	label="{_contact.contactId > 0 ? _contact.firstName + ' ' + _contact.lastName : 'New Contact'}">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+
+			[Bindable] public var _contact:Contact;
+			
+			private var validators:Array;
+
+			private var em:EntityManager = EntityManager.getInstance();		
+
+			private function init():void
+			{
+				validators = [firstNameValidator, lastNameValidator];
+			}
+
+			public function set contact(contact:Contact):void
+			{
+				_contact = contact;
+				if (_contact.pic != null)
+				{
+					pic.load(_contact.pic);
+				}
+			}
+
+			public function get contact():Contact
+			{
+				return _contact;
+			}
+
+			private function save():void
+			{
+				if (Validator.validateAll(validators).length>0)
+				{
+					return;
+				}
+				
+				_contact.firstName = firstName.text;
+				_contact.lastName = lastName.text;
+				_contact.address = address.text;
+				_contact.city = city.text;
+				_contact.state = state.text;
+				_contact.zip = zip.text;
+				_contact.email = email.text;
+				_contact.phone = phone.text;
+				
+				var isNew:Boolean = _contact.contactId == 0;
+				em.save(_contact);
+				dispatchEvent(new ContactEvent(isNew ? ContactEvent.CREATE : ContactEvent.UPDATE, _contact, true));
+				bCamera.enabled = true;
+
+			}
+			
+			private function deleteItem():void
+			{
+				em.remove(_contact);
+				dispatchEvent(new ContactEvent(ContactEvent.DELETE, _contact, true));
+			}
+
+			private function openCamera():void
+			{
+				var popup:CameraDialog = PopUpManager.createPopUp(this, CameraDialog, true) as CameraDialog;
+				PopUpManager.centerPopUp(popup);
+				popup.title = _contact.firstName + " " + _contact.lastName;
+				popup.addEventListener(PhotoEvent.NEW_PHOTO, newPhotoHandler);
+			}
+	
+			private function newPhotoHandler(event:PhotoEvent):void
+			{
+				_contact.pic = event.jpeg;
+				em.save(_contact);		
+				pic.load(_contact.pic);
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:Validator id="firstNameValidator" required="true" source="{firstName}" property="text"/>
+	<mx:Validator id="lastNameValidator" required="true" source="{lastName}" property="text"/>
+
+	<mx:Form width="100%" height="100%">
+		<mx:FormItem label="Id">
+			<mx:TextInput id="contactId" text="{_contact.contactId}" enabled="false" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="First Name" required="true">
+			<mx:TextInput id="firstName" text="{_contact.firstName}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Last Name" required="true">
+			<mx:TextInput id="lastName" text="{_contact.lastName}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Address">
+			<mx:TextInput id="address" text="{_contact.address}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="City">
+			<mx:TextInput id="city" text="{_contact.city}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="State">
+			<mx:TextInput id="state" text="{_contact.state}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zip">
+			<mx:TextInput id="zip" text="{_contact.zip}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Phone">
+			<mx:TextInput id="phone" text="{_contact.phone}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email">
+			<mx:TextInput id="email" text="{_contact.email}" width="200"/>
+		</mx:FormItem>
+	</mx:Form>	
+	
+	<mx:Image id="pic" top="14" right="10" width="140" height="160"/>
+	
+	<mx:Button label="Save" click="save()" left="10" bottom="8"/> 
+	<mx:Button label="Delete" click="deleteItem()" left="72" bottom="8"/> 
+	<mx:Button id="bCamera" icon="@Embed('assets/camera.png')" click="openCamera()" right="10" bottom="8" enabled="{_contact.contactId>0}"/> 
+
+</mx:Canvas>

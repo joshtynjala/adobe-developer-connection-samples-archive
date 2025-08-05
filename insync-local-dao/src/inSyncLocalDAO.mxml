@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:code="http://code.google.com/p/flexlib/"
+	layout="absolute" height="600" showFlexChrome="false" showStatusBar="false" currentState="small"
+	applicationComplete="init()" viewSourceURL="srcview/index.html">
+	
+	<mx:states>
+		<mx:State name="big">
+			<mx:SetProperty name="width" value="900"/>
+			<mx:SetProperty target="{tn}" name="visible" value="true"/>
+		</mx:State>
+		<mx:State name="small">
+			<mx:SetProperty name="width" value="400"/>
+			<mx:SetProperty target="{tn}" name="visible" value="false"/>
+		</mx:State>
+	</mx:states>
+	
+	<mx:Style source="styles.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+
+		import mx.collections.ArrayCollection;
+
+		private var sqlConnection:SQLConnection;
+		
+		[Bindable] private var contacts:ArrayCollection;
+		
+		private var dao:IContactDAO;
+
+		private function init():void
+		{			
+			// Read the application name and version from the application descriptor
+			var appXML:XML = NativeApplication.nativeApplication.applicationDescriptor;
+        	var ns:Namespace = appXML.namespace();
+        	appXML.ns::name + appXML.ns::version;				
+			var appName:String = appXML.ns::name;
+			var appVersion:String = appXML.ns::version;
+			edition.text = appName + " " + appVersion;
+			openDatabase();
+		}
+		
+		private function openDatabase():void
+		{
+			var file:File = File.userDirectory.resolvePath("contact.db");
+			var isNewDB:Boolean = !file.exists;
+			sqlConnection = new SQLConnection();
+			sqlConnection.open(file);
+			if (isNewDB) createDatabase();
+
+			dao = new ContactDAO(sqlConnection);
+			contacts = dao.findAll();
+		}
+		
+		private function createDatabase():void
+		{
+			var stmt:SQLStatement = new SQLStatement();
+			stmt.sqlConnection = sqlConnection;
+			stmt.text = "CREATE TABLE contact (contact_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT, last_name TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, phone TEXT, email TEXT, pic BLOB)";
+			stmt.execute();
+
+			stmt.text = "INSERT INTO contact (first_name, last_name, email) VALUES (:firstName, :lastName, :email)";
+
+			stmt.parameters[":firstName"] = "Christophe";
+			stmt.parameters[":lastName"] = "Coenraets";
+			stmt.parameters[":email"] = "ccoenrae@adobe.com";
+			stmt.execute();
+			
+			stmt.parameters[":firstName"] = "John";
+			stmt.parameters[":lastName"] = "Smith";
+			stmt.parameters[":email"] = "jsmith@jsmith.com";
+			stmt.execute();
+		}
+		
+		private function createItem():void
+		{
+			openTab(new Object())
+		}
+
+		public function openTab(contact:Object):void
+		{
+			currentState = "big";
+			var children:Array = tn.getChildren();
+			var length:int = children.length;
+			for (var i:int = 0; i<length; i++)
+			{
+				if (children[i].contact.contact_id == contact.contact_id)
+				{
+					tn.selectedIndex = i;
+					return;
+				}
+			}
+
+			var form:ContactForm = new ContactForm();
+			tn.addChild(form);
+			form.contact = contact;
+			form.dao = dao;
+			form.addEventListener(ContactEvent.CREATE, contactChangeHandler), 
+			form.addEventListener(ContactEvent.UPDATE, contactChangeHandler), 
+			form.addEventListener(ContactEvent.DELETE, contactChangeHandler), 
+			tn.selectedChild = form;
+		}
+
+		private function contactChangeHandler(event:ContactEvent):void
+		{
+			contacts = dao.findAll();
+			if (event.type == ContactEvent.DELETE)
+			{
+				tn.removeChild(event.target as ContactForm);
+			}			
+		}
+		
+		private function toggleMaximize():void
+		{
+			currentState = currentState=="small" ? "big" : "small";
+		}
+		
+		private function childRemoveHandler():void
+		{
+			if (tn.numChildren == 1) 
+			{
+				currentState = "small";
+			}
+		}
+		
+		]]>
+	</mx:Script>
+	
+	<mx:Canvas id="container" styleName="appContainer" left="12" right="12" top="12" bottom="12">
+	
+		<mx:Canvas left="20" top="14" right="20" mouseDown="nativeWindow.startMove()">
+			<mx:Canvas backgroundColor="#006699" width="36" height="36" verticalCenter="0"/>
+			<mx:Label text="in" fontSize="24" color="#FFFFFF" x="7" verticalCenter="0"/>
+			<mx:Label text="Sync" styleName="appTitle" x="38" verticalCenter="0"/>
+			<mx:Button icon="@Embed('assets/icon_plus.png')" width="32" height="32" click="createItem()" x="200" verticalCenter="0"/>
+			<mx:Button styleName="iconMinimize" verticalCenter="0" right="26" click="minimize()"/>
+			<mx:Button styleName="iconMaximize" verticalCenter="0" right="13" click="toggleMaximize()"/>
+			<mx:Button styleName="iconClose" verticalCenter="0" right="0" click="close()"/>
+		</mx:Canvas>
+	
+		<mx:HBox top="60" bottom="36" left="18" right="18">
+			<mx:DataGrid id="list" width="340" height="100%" dataProvider="{contacts}"
+				doubleClick="openTab(list.selectedItem)" doubleClickEnabled="true">
+				<mx:columns>
+					<mx:DataGridColumn dataField="first_name" headerText="First Name"/>
+					<mx:DataGridColumn dataField="last_name" headerText="Last Name"/>
+					<mx:DataGridColumn dataField="phone" headerText="Phone"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<code:SuperTabNavigator id="tn" width="100%" height="100%" childRemove="childRemoveHandler()"/>
+		</mx:HBox>
+
+		<mx:Label id="edition" left="18" bottom="14" styleName="edition"/>
+
+	</mx:Canvas>
+		
+</mx:WindowedApplication>

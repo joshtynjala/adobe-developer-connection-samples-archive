@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application	xmlns:mx="http://www.adobe.com/2006/mxml"
+				applicationComplete="initApp()">
+	<mx:Script>
+		<![CDATA[
+			 // event handler for clicking the box
+			public function clickHandler(event:MouseEvent):void {
+				trace("click");
+			}
+			
+			// called upon completion of the application
+			public function initApp():void {
+				
+				// add clickHandler as a listener for click
+				// events associated with the box
+				box.addEventListener(MouseEvent.CLICK, clickHandler);
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- Canvas instance representing the box -->
+	<mx:Canvas id="box" width="200" height="200" backgroundColor="#800000">
+	</mx:Canvas>
+	
+</mx:Application>

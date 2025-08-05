@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="100%" height="100%"
+	creationComplete="init()"
+	label="{_contact.contact_id > 0 ? _contact.first_name + ' ' + _contact.last_name : 'New Contact'}">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+
+			[Bindable] public var _contact:Object;
+			
+			public var sqlConnection:SQLConnection;
+
+			private var validators:Array;
+
+			private function init():void
+			{
+				validators = [firstNameValidator, lastNameValidator];
+			}
+
+			public function set contact(contact:Object):void
+			{
+				_contact = contact;
+				if (_contact.pic != null)
+				{
+					pic.load(_contact.pic);
+				}
+			}
+
+			public function get contact():Object
+			{
+				return _contact;
+			}
+
+			private function save():void
+			{
+				if (Validator.validateAll(validators).length>0)
+				{
+					return;
+				}
+				
+				_contact.first_name = firstName.text;
+				_contact.last_name = lastName.text;
+				_contact.address = address.text;
+				_contact.city = city.text;
+				_contact.state = state.text;
+				_contact.zip = zip.text;
+				_contact.email = email.text;
+				_contact.phone = phone.text;
+				if (_contact.contact_id > 0)
+				{
+					update();
+				}
+				else
+				{
+					insert();
+				}
+			}
+			
+			private function insert():void
+			{
+				try 
+				{
+					var stmt:SQLStatement = new SQLStatement();
+					stmt.sqlConnection = sqlConnection;
+					stmt.text = 
+						"INSERT INTO contact (first_name, last_name, address, city, state, zip, phone, email) " +
+							"VALUES (:firstName, :lastName, :address, :city, :state, :zip, :phone, :email)"; 
+					stmt.parameters[":firstName"] = _contact.first_name; 
+					stmt.parameters[":lastName"] = _contact.last_name; 
+					stmt.parameters[":address"] = _contact.address; 
+					stmt.parameters[":city"] = _contact.city; 
+					stmt.parameters[":state"] = _contact.state; 
+					stmt.parameters[":zip"] = _contact.zip; 
+					stmt.parameters[":email"] = _contact.email; 
+					stmt.parameters[":phone"] = _contact.phone; 
+					stmt.execute();
+					_contact.contact_id = stmt.getResult().lastInsertRowID;
+					bCamera.enabled = true;
+					contactId.text = _contact.contact_id;
+					label = _contact.first_name + " " + _contact.last_name;
+					dispatchEvent(new ContactEvent(ContactEvent.CREATE, _contact, true));
+				}
+				catch (error:SQLError)
+				{
+					Alert.show(error.details, "Error");
+				}
+			}
+			
+			private function update():void
+			{
+				try
+				{
+					var stmt:SQLStatement = new SQLStatement();
+					stmt.sqlConnection = sqlConnection;
+					stmt.text = 
+						"UPDATE contact set " + 
+							"first_name=:firstName, " + 
+							"last_name=:lastName, " +
+							"address=:address, " +
+							"city=:city, " +
+							"state=:state, " +
+							"zip=:zip, " +
+							"phone=:phone, " +
+							"email=:email " +
+							"WHERE contact_id=:contactId";
+					stmt.parameters[":firstName"] = _contact.first_name; 
+					stmt.parameters[":lastName"] = _contact.last_name; 
+					stmt.parameters[":address"] = _contact.address; 
+					stmt.parameters[":city"] = _contact.city; 
+					stmt.parameters[":state"] = _contact.state; 
+					stmt.parameters[":zip"] = _contact.zip; 
+					stmt.parameters[":phone"] = _contact.phone; 
+					stmt.parameters[":email"] = _contact.email; 
+					stmt.parameters[":contactId"] = _contact.contact_id; 
+					stmt.execute();
+					label = _contact.first_name + " " + _contact.last_name;
+					dispatchEvent(new ContactEvent(ContactEvent.UPDATE, _contact, true));
+				}
+				catch (error:SQLError)
+				{
+					Alert.show(error.details, "Error");
+				}
+			}
+
+			private function deleteItem():void
+			{
+				try 
+				{
+					var stmt:SQLStatement = new SQLStatement();
+					stmt.sqlConnection = sqlConnection;
+					stmt.text = "DELETE FROM contact WHERE contact_id = :contactId";
+					stmt.parameters[":contactId"] = _contact.contact_id; 
+					stmt.execute();
+					dispatchEvent(new ContactEvent(ContactEvent.DELETE, _contact, true));
+				}
+				catch (error:SQLError)
+				{
+					Alert.show(error.details, "Error");
+				}
+			}
+
+			private function openCamera():void
+			{
+				var popup:CameraDialog = PopUpManager.createPopUp(this, CameraDialog, true) as CameraDialog;
+				PopUpManager.centerPopUp(popup);
+				popup.title = _contact.first_name + " " + _contact.last_name;
+				popup.addEventListener(PhotoEvent.NEW_PHOTO, newPhotoHandler);
+			}
+	
+			private function newPhotoHandler(event:PhotoEvent):void
+			{
+				try
+				{
+					var stmt:SQLStatement = new SQLStatement();
+					stmt.sqlConnection = sqlConnection;
+					stmt.text = "UPDATE contact set pic=:jpeg WHERE contact_id=:contactId";
+					stmt.parameters[":jpeg"] = event.jpeg; 
+					stmt.parameters[":contactId"] = _contact.contact_id; 
+					stmt.execute();
+					_contact.pic = event.jpeg;
+					pic.load(_contact.pic);
+				}
+				catch (error:SQLError)
+				{
+					Alert.show(error.details, "Error");
+				}
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:Validator id="firstNameValidator" required="true" source="{firstName}" property="text"/>
+	<mx:Validator id="lastNameValidator" required="true" source="{lastName}" property="text"/>
+
+	<mx:Form width="100%" height="100%">
+		<mx:FormItem label="Id">
+			<mx:TextInput id="contactId" text="{_contact.contact_id}" enabled="false" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="First Name" required="true">
+			<mx:TextInput id="firstName" text="{_contact.first_name}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Last Name" required="true">
+			<mx:TextInput id="lastName" text="{_contact.last_name}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Address">
+			<mx:TextInput id="address" text="{_contact.address}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="City">
+			<mx:TextInput id="city" text="{_contact.city}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="State">
+			<mx:TextInput id="state" text="{_contact.state}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zip">
+			<mx:TextInput id="zip" text="{_contact.zip}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Phone">
+			<mx:TextInput id="phone" text="{_contact.phone}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email">
+			<mx:TextInput id="email" text="{_contact.email}" width="200"/>
+		</mx:FormItem>
+	</mx:Form>	
+	
+	<mx:Image id="pic" top="14" right="10" width="140" height="160"/>
+	
+	<mx:Button label="Save" click="save()" left="10" bottom="8"/> 
+	<mx:Button label="Delete" click="deleteItem()" left="72" bottom="8"/> 
+	<mx:Button icon="@Embed('assets/camera.png')" id="bCamera" click="openCamera()" right="10" bottom="8" enabled="{_contact.contact_id>0}"/> 
+
+</mx:Canvas>

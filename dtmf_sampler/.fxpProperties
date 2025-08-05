@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fxpProperties abbreviated="false" authoringTool="Flex Builder" compiles="true" parentProject="a8a7a6cf-8fbe-4135-b431-9b7367dc38cb" projectUUID="a8a7a6cf-8fbe-4135-b431-9b7367dc38cb" sdkVersion="3.4.1" uuid="718041cb-02e4-4d71-8175-70a1af1715e5" version="3">
+  <projects/>
+  <src/>
+  <swc>
+    <linked location="sdkPlaceHolder" path="sdkPlaceHolder" position="0" uuid="718041cb-02e4-4d71-8175-70a1af1715e5"/>
+    <linked location="C:/Documents and Settings/Nicholas Kwiatkowski/Adobe Flash Builder Beta 2/DTMF-Wizard/libs" path="/libs" position="1" uuid="718041cb-02e4-4d71-8175-70a1af1715e5"/>
+  </swc>
+  <misc/>
+  <theme/>
+</fxpProperties>

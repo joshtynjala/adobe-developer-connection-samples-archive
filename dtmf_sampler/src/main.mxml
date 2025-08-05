@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+						width="250" height="228" title="DTMF Wizard" creationComplete="initApp()">
+
+	<mx:Script>
+		<![CDATA[
+
+			/*  
+			---------------------------------------------------------------------------------------------
+			DTMF Sampler
+			
+			Copyright 2009 - Nick Kwiatkowski
+							nick@theFlexGroup.org
+			
+			This is a reference application.  It is not intended for real-world deployment.  The source
+			code is being released, as-is, with no warrantee or justification.  
+			
+			This source code is being released as a Creative Commons Attribution-Noncommercial-Share 
+			Alike 3.0 United States License.  
+			
+			----------------------------------------------------------------------------------------------
+			
+			Application Type:  AIR 2.0 beta
+			Application Deps:  AIR 2.0 Runtime, Microphone Input
+			  Expected Input:  Clicks on buttons via mouse, or audio via mic
+			Expected Outputs:  Visual or audio representation of DTMF tones.
+			
+			     Source Deps:  com.quetwo.dtmf.*
+			
+			*/			
+			
+			import flash.events.SampleDataEvent;
+			import flash.media.Microphone;
+			import flash.media.Sound;
+			import flash.utils.ByteArray;
+			import com.quetwo.dtmf.DTMFprocessor;
+			
+			protected var myDTMF:DTMFprocessor;
+			protected var dtmfnoise:ByteArray;
+			protected var mySound:Sound;
+			protected var myMicrophone:Microphone;
+			protected var micRecording:ByteArray;
+			protected var enableLoopback:Boolean = false;
+			
+			/* 
+			   Consider this the constructor.  It is called by creationComplete()
+			*/
+			public function initApp():void
+			{
+				myDTMF = new DTMFprocessor();
+			}
+			
+			/* 
+			   The following function will create a DTMF sound via a ByteArray generated in the
+			   generateDTMF() function.  It will play it via the Sound object
+			*/
+			protected function playDTMF(tone:String):void
+			{
+				dtmfnoise = myDTMF.generateDTMF(250,tone);
+				dtmfnoise.position = 0;
+				mySound = new Sound();
+				mySound.addEventListener(SampleDataEvent.SAMPLE_DATA, playByteArray);
+				mySound.play();
+				myDisplay.text = myDisplay.text + tone;
+				this.status = "Playing [" + tone + "]";
+			}
+			
+			protected function startStopMicrophone():void
+			{
+				if (micToggle.label == 'Mic On')
+				{
+					myDTMF.DTMFToneSensitivity = sensitivity.value;
+					startMicRecording();
+					micToggle.label = 'Mic Off';
+					this.status = "The microphone is now recording";
+				}
+				else
+				{
+					stopMicRecording();
+					micToggle.label = 'Mic On';
+					this.status = "The microphone is no longer recording";
+				}
+			}
+					
+			protected function enableDisableLoopback():void
+			{
+				if (enableLoopback)
+				{
+					enableLoopback = false;
+					this.status = "Loopback mode DIABLED";
+				}
+				else
+				{
+					enableLoopback = true;
+					this.status = "Loopback mode ENABLED";
+				}
+			}
+			
+			/*
+			   This funciton is called by the Sound event handler.  It plays everything in the sound buffer
+			   that is created by the playDTMF function.
+			*/
+			private function playByteArray(e:SampleDataEvent):void
+			{
+				if (!dtmfnoise.bytesAvailable > 0)
+					return;
+				var length:int = 8192; // Change to between 2048 and 8192
+				for (var i:int = 0; i < length; i++)
+				{
+					var sample:Number = 0;
+					if (dtmfnoise.bytesAvailable > 0)
+						sample = dtmfnoise.readFloat();
+					e.data.writeFloat(sample);
+					e.data.writeFloat(sample);
+				}				
+			}
+
+			/*
+			   This function will start the mic recording.  It does this by creating a new ByteArray and 
+			   calling the getMicrophone() function.  We really should be allowing the user to select which
+			   microphone to start rather than hard-coding the default.  The gotMicData function will be
+			   dispatched when there is new audio data for it to process.
+			*/
+			private function startMicRecording():void
+			{
+				micRecording = new ByteArray();
+				myMicrophone = Microphone.getMicrophone();
+				myMicrophone.rate = 44;
+				myMicrophone.setLoopBack(enableLoopback);
+				myMicrophone.addEventListener(SampleDataEvent.SAMPLE_DATA, gotMicData);
+			}
+			
+			private function stopMicRecording():void
+			{
+				myMicrophone.removeEventListener(SampleDataEvent.SAMPLE_DATA, gotMicData);
+			}
+			
+			/*
+			   This function will take the ByteArray of stuff that comes from the Microphone and send it to
+			   be processed by the DTMF Search function.  If this function comes back with anything, it will
+			   add it to the display.
+			*/
+			private function gotMicData(e:SampleDataEvent):void
+			{
+				var audioChunk:ByteArray = new ByteArray();
+				audioChunk.writeBytes(e.data);
+				myDisplay.text = myDisplay.text + myDTMF.searchDTMF(audioChunk);
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	
+	<mx:TextInput id="myDisplay" height="50" text="" fontSize="32" textAlign="center" 
+				  borderStyle="inset" left="10" right="10" top="10"/>
+	<mx:Button x="10" y="68" label="1" click="playDTMF('1')"/>
+	<mx:Button x="58" y="68" label="2" click="playDTMF('2')"/>
+	<mx:Button x="106" y="68" label="3" click="playDTMF('3')"/>
+	<mx:Button x="10" y="98" label="4" click="playDTMF('4')"/>
+	<mx:Button x="58" y="98" label="5" click="playDTMF('5')"/>
+	<mx:Button x="106" y="98" label="6" click="playDTMF('6')"/>
+	<mx:Button x="10" y="128" label="7" click="playDTMF('7')"/>
+	<mx:Button x="58" y="128" label="8" click="playDTMF('8')"/>
+	<mx:Button x="107" y="128" label="9" click="playDTMF('9')"/>
+	<mx:Button x="10" y="158" label="*" click="playDTMF('*')"/>
+	<mx:Button x="58" y="158" label="0" click="playDTMF('0')"/>
+	<mx:Button x="106" y="158" label="#" click="playDTMF('#')"/>
+	<mx:Button x="154" y="68" label="Mic On" width="84" id="micToggle" click="startStopMicrophone()"/>
+	<mx:Button x="154" y="98" label="Clear" width="84" click="myDisplay.text=''"/>
+	<mx:Button x="154" y="128" label="Loopback" width="84" click="enableDisableLoopback()"/>
+	<mx:Button x="154" y="158" label="Load" width="84" toolTip="Disabled" enabled="false"/>
+	<mx:HSlider minimum="10" maximum="50" snapInterval="2" left="10" right="10" bottom="15" value="15" 
+				id="sensitivity" toolTip="DTMF Tone Sensitivity"/>
+	
+</mx:WindowedApplication>

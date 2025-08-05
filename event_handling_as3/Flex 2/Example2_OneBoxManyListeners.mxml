@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application	xmlns:mx="http://www.adobe.com/2006/mxml"
+				applicationComplete="initApp()">
+	<mx:Script>
+		<![CDATA[
+			// event handler for clicking the box
+			public function boxClick(event:MouseEvent):void {
+				trace("box click");
+			}
+			
+			// event handler for clicking in root
+			public function rootClick(event:MouseEvent):void {
+				trace("root click");
+			}
+			
+			// event handler for clicking within the stage
+			// for the stage, this can mean anywhere
+			public function stageClick(event:MouseEvent):void {
+				trace("stage click");
+			}
+
+
+			// called upon completion of the application
+			public function initApp():void {
+				
+				// add boxClick as listener of box click 
+				box.addEventListener(MouseEvent.CLICK, boxClick);
+				// add rootClick as listener of root click 
+				root.addEventListener(MouseEvent.CLICK, rootClick);
+				// add rootClick again, but use the capture phase
+				root.addEventListener(MouseEvent.CLICK, rootClick, true);
+				// add stageClick as listener of stage click 
+				stage.addEventListener(MouseEvent.CLICK, stageClick);
+				// add stageClick again, but use the capture phase
+				stage.addEventListener(MouseEvent.CLICK, stageClick, true);
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- Canvas instance representing the box -->
+	<mx:Canvas id="box" width="200" height="200" backgroundColor="#800000">
+	</mx:Canvas>
+	
+</mx:Application>

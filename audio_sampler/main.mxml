@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+						creationComplete="setupMicrophoneList()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.adobe.audio.format.WAVWriter;
+			
+			import flash.events.SampleDataEvent;
+			import flash.media.Microphone;
+			import flash.media.Sound;
+			import flash.utils.ByteArray;
+			
+			[Bindable] private var microphoneList:Array;
+			         protected var microphone:Microphone;
+			         protected var isRecording:Boolean = false;
+				     protected var soundRecording:ByteArray;
+			         protected var soundOutput:Sound;
+			
+			protected function setupMicrophoneList():void
+			{
+				microphoneList = Microphone.names;
+			}
+			
+			protected function setupMicrophone():void
+			{
+				microphone = Microphone.getMicrophone(comboMicList.selectedIndex);
+				microphone.rate = 44;
+			}
+			
+			protected function startMicRecording():void
+			{
+				isRecording = true;
+				soundRecording = new ByteArray();
+				microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, gotMicData);
+			}
+			
+			protected function stopMicRecording():void
+			{
+				isRecording = false;
+				microphone.removeEventListener(SampleDataEvent.SAMPLE_DATA, gotMicData);
+			}
+			
+			private function gotMicData(micData:SampleDataEvent):void
+			{
+				soundRecording.writeBytes(micData.data);
+			}
+			
+			protected function playbackData():void
+			{
+				soundRecording.position = 0;
+				
+				soundOutput = new Sound();
+				soundOutput.addEventListener(SampleDataEvent.SAMPLE_DATA, playSound);
+				
+				soundOutput.play();
+			}
+			
+			private function playSound(soundOutput:SampleDataEvent):void
+			{
+				if (!soundRecording.bytesAvailable > 0)
+					return;
+				for (var i:int = 0; i < 8192; i++)
+				{
+					var sample:Number = 0;
+					if (soundRecording.bytesAvailable > 0)
+						sample = soundRecording.readFloat();
+					soundOutput.data.writeFloat(sample); 
+					soundOutput.data.writeFloat(sample);  
+				}				
+			}
+			
+			protected function saveFile():void
+			{
+				var outputFile:File = File.desktopDirectory.resolvePath("recording.wav");
+				var outputStream:FileStream = new FileStream();
+				var wavWriter:WAVWriter = new WAVWriter();
+				
+				soundRecording.position = 0;  // rewind to the beginning of the sample
+				
+				wavWriter.numOfChannels = 1; // set the inital properties of the Wave Writer
+				wavWriter.sampleBitRate = 16;
+				wavWriter.samplingRate = 44100;
+				
+				outputStream.open(outputFile, FileMode.WRITE);  //write out our file to disk.
+				wavWriter.processSamples(outputStream, soundRecording, 44100, 1); // convert our ByteArray to a WAV file.
+				outputStream.close();
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:ComboBox id="comboMicList" x="100" y="10" dataProvider="{microphoneList}"/>
+	<mx:Button x="10" y="40" label="Start Rec" click="startMicRecording()"/>
+	<mx:Button x="97" y="40" label="Stop Rec" click="stopMicRecording()"/>
+	<mx:Button x="10" y="10" label="Select Mic" click="setupMicrophone()"/>
+	<mx:Button x="11" y="70" label="Playback" click="playbackData()"/>
+	<mx:Button x="97" y="70" label="Save" click="saveFile()"/>
+	
+</mx:WindowedApplication>

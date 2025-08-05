@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+				layout="absolute" width="300" height="300"
+				applicationComplete="initApp()">
+	<mx:Script>
+		<![CDATA[
+			// velocity properties for controlling
+			// box movement in x and y
+			public var velocityX:Number = 5;
+			public var velocityY:Number = 7;
+			// padding distance on the sides of the
+			// stage for the box to bounce
+			public var padding:Number = 10;
+			
+			// event handler for the bounce event
+			// this uses the custom side property of 
+			// BounceEvent instances to see what side of
+			// the stage the box had bounced
+			public function bounceHandler(event:BounceEvent):void {
+				trace("Bounce on " + event.side + " side");
+			}
+			
+			// enter frame event handler to move the
+			// box within the screen
+			public function moveBox(event:Event):void {
+				
+				// move the box based on velocity values
+				box.x += velocityX;
+				box.y += velocityY;
+				
+				// determine limits of movement
+				var limitLeft:Number = padding;
+				var limitRight:Number = stage.stageWidth - box.width - padding;
+				var limitTop:Number = padding;
+				var limitBottom:Number = stage.stageHeight - box.height - padding;
+				
+				// if the box is passed the left limit
+				// reverse x direction and dispatch a BounceEvent
+				// specifying a bounce on the left side
+				if (box.x <= limitLeft) {
+					velocityX = Math.abs(velocityX);
+					box.dispatchEvent(new BounceEvent(BounceEvent.BOUNCE, "left"));
+					
+				// if the box is passed the right limit
+				// reverse x direction and dispatch a BounceEvent
+				// specifying a bounce on the right side
+				}else if (box.x >= limitRight){
+					velocityX = -Math.abs(velocityX);
+					box.dispatchEvent(new BounceEvent(BounceEvent.BOUNCE, "right"));
+				}
+				
+				// if the box is passed the top limit
+				// reverse y direction and dispatch a BounceEvent
+				// specifying a bounce on the top side
+				if (box.y <= limitTop) {
+					velocityY = Math.abs(velocityY);
+					box.dispatchEvent(new BounceEvent(BounceEvent.BOUNCE, "top"));
+					
+				// if the box is passed the bottom limit
+				// reverse y direction and dispatch a BounceEvent
+				// specifying a bounce on the bottom side
+				}else if (box.y >= limitBottom){
+					velocityY = -Math.abs(velocityY);
+					box.dispatchEvent(new BounceEvent(BounceEvent.BOUNCE, "bottom"));
+				}
+			}
+			
+			// called upon completion of the application
+			public function initApp():void {
+				
+				// add moveBox as listener of enter frame event
+				box.addEventListener(Event.ENTER_FRAME, moveBox);
+				// add bounceHandler as listener for the current scope
+				addEventListener(BounceEvent.BOUNCE, bounceHandler);
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- Canvas instance representing the box -->
+	<mx:Canvas width="20" height="20" x="20" y="20" backgroundColor="#800000" id="box">
+	</mx:Canvas>
+	
+</mx:Application>

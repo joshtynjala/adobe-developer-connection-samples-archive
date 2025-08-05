@@ -1,0 +1,85 @@
+@font-face
+{
+    src: url("assets/fonts/MyriadWebPro.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face
+{
+    src: url("assets/fonts/MyriadWebPro-Bold.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: bold;
+}
+
+WindowedApplication {
+	paddingTop:0;
+	paddingBottom:0;
+	paddingLeft:0;
+	paddingRight:0;
+	vertical-gap:0;
+	theme-color: #006699;
+	font-family: main;
+	color: #333333;
+	font-size: 12;
+}
+
+.appContainer {
+	background-image: Embed("assets/background.png",
+			scaleGridLeft="25",
+			scaleGridRight="700",
+			scaleGridTop="60",
+			scaleGridBottom="200");
+	background-size: "100%";
+}
+
+
+.appTitle {
+	font-size: 24;
+	color: #006699;
+}
+
+.edition {
+	font-size: 12;
+	color: #666666;
+}
+
+Button {
+	corner-radius: 2;
+}
+
+.iconClose {
+	skin: Embed("assets/icon_close16.png");
+	over-skin: Embed("assets/icon_close_over16.png");
+}
+
+.iconMinimize {
+	skin: Embed("assets/icon_minimize16.png");
+	over-skin: Embed("assets/icon_minimize_over16.png");
+}
+.iconMaximize {
+	skin: Embed("assets/icon_maximize16.png");
+	over-skin: Embed("assets/icon_maximize_over16.png");
+}
+
+.cameraDialog {
+   borderColor: #000000;
+   borderAlpha: 1;
+   backgroundColor: #000000;
+   titleStyleName: "cameraDialogTitle";
+}
+
+.cameraDialogTitle {
+   color: #CCCCCC;
+}
+
+.cameraButton {
+   cornerRadius: 0;
+   fillAlphas: 0.9, 0.9, 0.8, 0.8;
+   fillColors: #000000, #000000;
+   color: #CCCCCC;
+   textRollOverColor: #CCCCCC;
+   textSelectedColor: #333333;
+}

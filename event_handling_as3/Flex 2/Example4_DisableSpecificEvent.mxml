@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application	xmlns:mx="http://www.adobe.com/2006/mxml"
+				applicationComplete="initApp()">
+	<mx:Script>
+		<![CDATA[
+			// variable to determine whether or not
+			// propagation of click events should
+			// be stopped for the contents in window
+			public var clickEnabled:Boolean = true;
+		
+			// event handler for clicking buttons within window
+			public function clickHandler(event:MouseEvent):void {
+				trace("click: " + event.currentTarget.name);
+			}
+			
+			// event handler for the enabler button to
+			// toggle the value of clickEnabled
+			public function toggleEnabled(event:MouseEvent):void {
+				clickEnabled = !clickEnabled;
+			}
+			
+			// event handler for window that is handled in the
+			// capture phase which allows it to stop propagation
+			// of events to its children if needed
+			public function disableClickHandler(event:MouseEvent):void {
+				if (clickEnabled == false) {
+					event.stopPropagation();
+				}
+			}
+			
+			// called upon completion of the application
+			public function initApp():void {
+				
+				// assign listeners for buttons in window
+				button1.addEventListener(MouseEvent.CLICK, clickHandler);
+				button2.addEventListener(MouseEvent.CLICK, clickHandler);
+				// assign window listener (for stop propagation)
+				// this is set to listen within the the capture phase so
+				// that it will occur before the event reaches its children
+				window.addEventListener(MouseEvent.CLICK, disableClickHandler, true);
+				// assign enabler listener
+				enabler.addEventListener(MouseEvent.CLICK, toggleEnabled);
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- window containing buttons to disable click events for -->
+    <mx:Panel width="250" height="250" layout="absolute" id="window">
+    
+    	<!-- buttons to have click event disabled -->
+        <mx:Button x="30" y="25" label="Button" id="button1"/>
+        <mx:Button x="30" y="55" label="Button" id="button2"/>
+    </mx:Panel>
+    
+    <!-- enabler button toggles click event disabled for buttons in window -->
+    <mx:Button label="Enabler" id="enabler"/>
+	
+</mx:Application>

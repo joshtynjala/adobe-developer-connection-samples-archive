@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:display="flash.display.*"
+	layout="absolute" width="262"
+	creationComplete="startCamera()"
+	paddingLeft="0" paddingTop="0" paddingRight="0" paddingBottom="0" cornerRadius="0"
+	styleName="cameraDialog">
+
+	<mx:Script>
+		<![CDATA[
+
+		import mx.managers.PopUpManager;
+		import mx.graphics.codec.JPEGEncoder;
+		import mx.controls.Alert;
+			
+		private var _jpeg:ByteArray;
+		
+		public function set jpeg(jpeg:ByteArray):void
+		{
+			_jpeg = jpeg;
+			if (jpeg)
+				image.load(jpeg);
+		}			
+
+		public function get jpeg():ByteArray
+		{
+			return _jpeg;
+		}			
+			
+	    private var camera:Camera;
+
+		private var timer:Timer;
+
+        private function startCamera():void
+        {
+        	timer = new Timer(2000, 1);
+        	timer.addEventListener(TimerEvent.TIMER, 
+        		function(event:TimerEvent):void 
+        		{
+        			vd.visible = true;
+        			image.visible = false;
+        		});
+        	
+			try
+			{
+	            camera = Camera.getCamera();
+		        vd.attachCamera(camera);
+			}
+			catch (e:Object)
+			{
+				Alert.show("Make sure there is a properly installed Webcam connected to your computer.", "Webcam Error");
+				return;	
+			}
+        }
+        
+        private function takePicture():void
+        {
+        	var bd:BitmapData = new BitmapData(vd.width, vd.height);
+			bd.draw(vd);
+			var encoder:JPEGEncoder = new JPEGEncoder();
+			_jpeg = encoder.encode(bd);
+			image.load(_jpeg);
+			vd.visible = false;
+			image.visible = true;
+			bApply.visible = true;
+			timer.start();
+        }
+        
+        private function apply():void
+        {
+        	vd.attachCamera(null);
+			dispatchEvent(new PhotoEvent(PhotoEvent.NEW_PHOTO, _jpeg));        	
+			PopUpManager.removePopUp(this);        }
+
+        private function cancelHandler():void
+        {
+        	vd.attachCamera(null);
+			PopUpManager.removePopUp(this);        	
+        }
+        
+		]]>
+	</mx:Script>
+
+	<mx:VideoDisplay id="vd" width="160" height="160"/>
+	<mx:Image id="image" width="160" height="160" visible="false"/>
+	
+	<mx:Button label="Picture" click="takePicture()" styleName="cameraButton" right="0" width="74"/>	
+	<mx:Button id="bApply" label="Apply" click="apply()" styleName="cameraButton" right="0" bottom="34" width="74" visible="false"/>	
+	<mx:Button label="Cancel" click="cancelHandler()" styleName="cameraButton" right="0" bottom="0" width="74"/>	
+	
+</mx:TitleWindow>

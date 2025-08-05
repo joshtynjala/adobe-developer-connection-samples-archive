@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application	xmlns:mx="http://www.adobe.com/2006/mxml"
+				applicationComplete="initApp()">
+	<mx:Script>
+		<![CDATA[
+			// event handler for clicking down on the box
+			public function boxDown(event:MouseEvent):void {
+				trace("box down");
+	
+				// add boxUpOutside as a listener of 
+				// mouse up for the stage allowing it to
+				// detect a mouse up anywhere
+				stage.addEventListener(MouseEvent.MOUSE_UP, boxUpOutside);
+			}
+
+			// event handler for releasing the mouse (for stage)
+			public function boxUpOutside(event:MouseEvent):void {
+				
+				// if the target of the event is not box
+				// then you know, to box, its a release outside
+				if (event.target != box) {
+					trace("box up outside");
+				}
+	
+				// remove the stage listener for this event
+				// no matter if up over or outside
+				stage.removeEventListener(MouseEvent.MOUSE_UP, boxUpOutside);
+			}
+
+			// called upon completion of the application
+			public function initApp():void {
+				
+				// add listener to box to know when it's clicked
+				box.addEventListener(MouseEvent.MOUSE_DOWN, boxDown);
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- Canvas instance representing the box -->
+	<mx:Canvas id="box" width="200" height="200" backgroundColor="#800000">
+	</mx:Canvas>
+	
+</mx:Application>
